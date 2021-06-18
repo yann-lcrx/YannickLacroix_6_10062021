@@ -18,18 +18,17 @@ exports.createSauce = (req, res, next) => {
   };
  
 exports.getOneSauce = (req, res, next) => {
-    Sauce.findOne({ _id: req.params.id })
+  Sauce.findOne({ _id: req.params.id })
       .then(sauce => res.status(200).json(sauce))
       .catch(error => res.status(404).json({ error }));
   };
  
 exports.getAllSauce = (req, res, next) => {
-    Sauce.find()
+  Sauce.find()
       .then(sauces => res.status(200).json(sauces))
       .catch(error => res.status(400).json({ error }));
   };
 
-  
 exports.editSauce = (req, res, next) => {
   const sauceObject = req.file ?
   {
@@ -48,22 +47,6 @@ exports.editSauce = (req, res, next) => {
 };
 
 exports.deleteSauce = (req, res, next) => {
-  Sauce.deleteOne({_id: req.params.id}).then(
-    () => {
-      res.status(200).json({
-        message: 'Sauce supprimée !'
-      });
-    }
-  ).catch(
-    (error) => {
-      res.status(400).json({
-        error: error
-      });
-    }
-  );
-};
-
-exports.deleteSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id })
     .then(sauce => {
       const filename = sauce.imageUrl.split('/images/')[1];
@@ -73,4 +56,21 @@ exports.deleteSauce = (req, res, next) => {
           .catch(error => res.status(400).json({ error }));
       });
     })
+}
+
+exports.likeSauce = (req, res, next) => {
+  //const likeObject = JSON.parse(req.body.like);
+  if (req.body.like == 1) {
+    Sauce.updateOne({ _id: req.params.id },{
+      $inc: {likes: 1 },
+      $push: { usersLiked: req.body.userId }
+    })
+      .then(() => res.status(201).json({ message: 'Votre like a bien été pris en compte !'}))
+      .catch(error => res.status(400).json({ error }));
+  };
+  if (req.body.like == -1) {
+    Sauce.updateOne({ _id: req.params.id },{ $inc: {dislikes: 1 }})
+      .then(() => res.status(201).json({ message: 'Votre dislike a bien été pris en compte !'}))
+      .catch(error => res.status(400).json({ error }));
+  };
 }
