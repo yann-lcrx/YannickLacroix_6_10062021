@@ -8,6 +8,7 @@ const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');
 
 const rateLimit = require("express-rate-limit");
+const helmet = require("helmet");
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -30,6 +31,7 @@ app.use((req, res, next) => {
  });
 
 app.use(limiter);
+app.use(helmet())
 
 app.use(bodyParser.json());
 
