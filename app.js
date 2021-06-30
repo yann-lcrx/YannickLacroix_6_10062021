@@ -7,6 +7,13 @@ const bodyParser = require('body-parser');
 const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');
 
+const rateLimit = require("express-rate-limit");
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 120 // limite de 120 requêtes par windowMs
+});
+
 mongoose.connect('mongodb+srv://YannLcrx:qzoX5sfkx0Mc62cf@cluster0.td9cx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
   { useNewUrlParser: true,
     useUnifiedTopology: true })
@@ -21,6 +28,8 @@ app.use((req, res, next) => {
    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
    next();
  });
+
+app.use(limiter);
 
 app.use(bodyParser.json());
 
