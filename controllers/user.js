@@ -3,10 +3,10 @@ const bcrypt = require('bcrypt')
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 
-//Règles de validation du mot de passe
 var passwordValidator = require('password-validator');
-var schema = new passwordValidator;
 
+//Règles de validation du mot de passe
+var schema = new passwordValidator;
 schema
 .is().min(8)            
 .is().max(64)
